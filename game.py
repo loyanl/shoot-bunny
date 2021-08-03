@@ -60,7 +60,89 @@ while running:
     screen.blit(castle, (0, 135))
     screen.blit(castle, (0, 240))
     screen.blit(castle, (0, 345))
-    # 7 - update the screen
+
+    #showing the bunny
+    position = pygame.mouse.get_pos()
+    angle = math.atan2(position[1]-(playerpos[1]+32),position[0]-(playerpos[0]+26))
+    playerrot = pygame.transform.rotate(player, 360-angle*57.29)
+    playerpos1 = (playerpos[0]-playerrot.get_rect().width/2, playerpos[1]-playerrot.get_rect().height/2)
+    screen.blit(playerrot, playerpos1)
+
+    # 6.3 - Draw badgers
+    if badtimer == 0:
+        badguys.append([640, random.randint(50, 430)])
+        badtimer = 100 - (badtimer1 * 2)
+        if badtimer1 >= 35:
+            badtimer1 = 35
+        else:
+            badtimer1 += 5
+    index = 0
+    for badguy in badguys:
+        if badguy[0] < -64:
+            badguys.pop(index)
+        badguy[0] -= 7
+        # 6.3.1 - Attack castle
+        badrect = pygame.Rect(badguyimg.get_rect())
+        badrect.top = badguy[1]
+        badrect.left = badguy[0]
+        if badrect.left < 64:
+            hit.play()
+            healthvalue -= random.randint(5, 20)
+            badguys.pop(index)
+        # 6.3.2 - Check for collisions
+        index1 = 0
+        for bullet in arrows:
+            bullrect = pygame.Rect(arrow.get_rect())
+            bullrect.left = bullet[1]
+            bullrect.top = bullet[2]
+            if badrect.colliderect(bullrect):
+                enemy.play()
+                acc[0] += 1
+                badguys.pop(index)
+                arrows.pop(index1)
+            index1 += 1
+        # 6.3.3 - Next bad guy
+        index += 1
+    for badguy in badguys:
+        screen.blit(badguyimg, badguy)
+
+    # 7 - update the screen #should be before the keyboard
     pygame.display.flip()
 
+    # 8 - loop through the events
+    for event in pygame.event.get():
+        # check if the event is the X button
+        if event.type == KEYDOWN: #Keyboard is being pressed
+            if event.key == K_UP:
+                keys[0] = True
+            elif event.key == K_LEFT:
+                keys[1] = True
+            elif event.key == K_DOWN:
+                keys[2] = True
+            elif event.key == K_RIGHT:
+                keys[3] = True
+        if event.type == KEYUP: #keyboard has been released
+            if event.key == K_UP:
+                keys[0] = False
+            elif event.key == K_LEFT:
+                keys[1] = False
+            elif event.key == K_DOWN:
+                keys[2] = False
+            elif event.key == K_RIGHT:
+                keys[3] = False
+
+    # 9 - Move player
+    if keys[0]:
+        if playerpos[1]>10:
+            playerpos[1] -= 5
+    elif keys[2]:
+        if playerpos[1] <470:
+            playerpos[1] += 5
+    if keys[1]:
+        if playerpos[0] >10:
+          playerpos[0] -= 5
+    elif keys[3]:
+        if playerpos[0] < 630:
+         playerpos[0] += 5
+    badtimer -= 1
 
