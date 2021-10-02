@@ -110,13 +110,14 @@ while running:
 
     if badtimer == 0:
         # adding new bad guys
-        badguys.append([640, random.randint(50, 430)])
+        badguys.append([900, random.randint(50, 430)])
         wolves.append([640,random.randint(50,430)])
-        badtimer = 500 - int(badtimer1*0.1 )
-        if badtimer1 >= 35:
-            badtimer1 = 35
-        else:
-            badtimer1 += 5
+        badtimer = 100
+        # badtimer = 500 - int(badtimer1*0.1)
+        # if badtimer1 >= 35:
+        #     badtimer1 = 35
+        # else:
+        #     badtimer1 += 5
 
     # remove bad guys once it's out of screen
     index = 0
@@ -124,7 +125,7 @@ while running:
         if badguy[0] < -64:
             badguys.pop(index)
 
-        badguy[0] -= 1# moving the badguy to the left of scrreen
+        badguy[0] -= 5# moving the badguy to the left of scrreen
         index += 1
 
     # remove wolf once it's out of scrreen
@@ -133,7 +134,7 @@ while running:
         if wolf[0] < -64:
             wolves.pop(index)
 
-        wolf[0] -= 1
+        wolf[0] -= 5
         index += 1
         # # 6.3.1 - Attack castle
         # badrect = pygame.Rect(badguyimg.get_rect())
@@ -164,29 +165,43 @@ while running:
     for wolf in wolves:
         screen.blit(wolfimg, wolf)
     # 7 - update the screen #should be before the keyboard
-    pygame.display.flip()
 
-    # 8 - loop through the events
-    for event in pygame.event.get():
-        # check if the event is the X button
-        if event.type == KEYDOWN: #Keyboard is being pressed
-            if event.key == K_UP:
-                keys[0] = True
-            elif event.key == K_LEFT:
-                keys[1] = True
-            elif event.key == K_DOWN:
-                keys[2] = True
-            elif event.key == K_RIGHT:
-                keys[3] = True
-        if event.type == KEYUP: #keyboard has been released
-            if event.key == K_UP:
-                keys[0] = False
-            elif event.key == K_LEFT:
-                keys[1] = False
-            elif event.key == K_DOWN:
-                keys[2] = False
-            elif event.key == K_RIGHT:
-                keys[3] = False
+
+    # # 8 - loop through the events
+    # for event in pygame.event.get():
+    #     # check if the event is the X button
+    #     if event.type == KEYDOWN: #Keyboard is being pressed
+    #         if event.key == K_UP:
+    #             keys[0] = True
+    #         elif event.key == K_LEFT:
+    #             keys[1] = True
+    #         elif event.key == K_DOWN:
+    #             keys[2] = True
+    #         elif event.key == K_RIGHT:
+    #             keys[3] = True
+    #     if event.type == KEYUP: #keyboard has been released
+    #         if event.key == K_UP:
+    #             keys[0] = False
+    #         elif event.key == K_LEFT:
+    #             keys[1] = False
+    #         elif event.key == K_DOWN:
+    #             keys[2] = False
+    #         elif event.key == K_RIGHT:
+    #             keys[3] = False
+
+    # 6.2 - Draw arrows
+    for bullet in arrows:
+        index = 0
+        velx = math.cos(bullet[0])*10
+        vely = math.sin(bullet[0])*10
+        bullet[1] += velx
+        bullet[2] += vely
+        if bullet[1]<-64 or bullet[1]>640 or bullet[2]<-64 or bullet[2]>480:
+            arrows.pop(index)
+        index += 1
+        for projectile in arrows:
+            arrow1 = pygame.transform.rotate(arrow, 360-projectile[0]*57.29)
+            screen.blit(arrow1, (projectile[1], projectile[2]))
 
     # 9 - Move player
     if keys[0]:
@@ -201,6 +216,36 @@ while running:
     elif keys[3]:
         if playerpos[0] < 630:
          playerpos[0] += 5
-    badtimer -= 1
+    badtimer -= 1 #part that changes the timer
 
-#check why wolves is not an empty list, why badguys is an empty list
+    pygame.display.flip()  # update the screen
+    for event in pygame.event.get():
+        # check if the event is the X button
+        if event.type == KEYDOWN:
+            if event.key == K_UP:
+                keys[0] = True
+            elif event.key == K_LEFT:
+                keys[1] = True
+            elif event.key == K_DOWN:
+                keys[2] = True
+            elif event.key == K_RIGHT:
+                keys[3] = True
+        if event.type == KEYUP:
+            if event.key == K_UP:
+                keys[0] = False
+            elif event.key == K_LEFT:
+                keys[1] = False
+            elif event.key == K_DOWN:
+                keys[2] = False
+            elif event.key == K_RIGHT:
+                keys[3] = False
+        if event.type == QUIT:
+            # if it is quit the game
+            pygame.quit()
+            exit(0)
+        if event.type == MOUSEBUTTONDOWN:
+            shoot.play()
+            position = pygame.mouse.get_pos()
+            acc[1] += 1
+            arrows.append([math.atan2(position[1]-(playerpos1[1]+32),position[0]-(playerpos1[0]+26)),playerpos1[0]+32,playerpos1[1]+32])
+
