@@ -52,6 +52,7 @@ while running:
     # 5 - clear the screen before drawing it again
     screen.fill(0)
     # 6 - draw the screen elements
+    #6.0 drawing the screen, the background, and the castle
     screen.blit(night, (0, 0))
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -63,7 +64,8 @@ while running:
     screen.blit(castle, (0, 240))
     screen.blit(castle, (0, 345))
 
-    #showing the bunny
+    #6.1
+    #showing the bunny (setting the player's position and it's position)
     position = pygame.mouse.get_pos()
     angle = math.atan2(position[1]-(playerpos[1]+32),position[0]-(playerpos[0]+26))
     playerrot = pygame.transform.rotate(player, 360-angle*57.29)
@@ -85,21 +87,22 @@ while running:
             screen.blit(arrow1, (projectile[1], projectile[2]))
 
     #6.3 draw badgers / badguys
+    #6.3.0 generate new badgers when bad timer == 0
     if badtimer == 0:
         # adding new bad guys
         badguys.append([900, random.randint(50, 430)])
 
         badtimer = 100
 
-    # remove bad guys once it's out of screen
+    #6.3.1 remove bad guys once it's out of screen
     index = 0
     for badguy in badguys:
         if badguy[0] < -64:
             badguys.pop(index)
 
-        badguy[0] -= 5# moving the badguy to the left of scrreen
+        badguy[0] -= 5#6.3.2 moving the badguy to the left of scrreen
 
-        # 6.3.1 - Attack castle
+        # 6.3.3 - Attack castle
         badrect = pygame.Rect(badguyimg.get_rect())
         badrect.top = badguy[1]
         badrect.left = badguy[0]
@@ -108,7 +111,7 @@ while running:
             healthvalue -= random.randint(5, 20)
             badguys.pop(index)
 
-        # 6.3.2 - Check for collisions
+        # 6.3.4 - Check for collisions
         index1 = 0
         for bullet in arrows:
             bullrect = pygame.Rect(arrow.get_rect())
@@ -122,11 +125,11 @@ while running:
             index1 += 1
 
         index += 1 #this goes to 6.3.3
-
+    #6.3.5 shows the bad guy
     for badguy in badguys:
         screen.blit(badguyimg, badguy)
 
-    # 6.4
+    # 6.4 repeat 6.3 for the wolves
     # remove wolf once it's out of scrreen
         # 6.4 draw wolves / badguys
     if badtimer1 == 0:
