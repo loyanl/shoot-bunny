@@ -14,7 +14,7 @@ playerpos = [100, 100]
 acc = [0, 0]
 arrows = []
 badtimer = 100
-badtimer1 = 0
+badtimer1 = 100
 badguys = [[640, 100]]
 healthvalue = 194
 wolves = [[640,100]]
@@ -70,54 +70,26 @@ while running:
     playerpos1 = (playerpos[0]-playerrot.get_rect().width/2, playerpos[1]-playerrot.get_rect().height/2)
     screen.blit(playerrot, playerpos1)
 
-    # 6.3 - Draw wolves
-    # if badtimer == 0:
-    #     wolves.append([640, random.randint(50, 430)])
-    #     badtimer = 100 - (badtimer1 * 2)
-    #     if badtimer1 >= 35:
-    #         badtimer1 = 35
-    #     else:
-    #         badtimer1 += 5
-    # index = 0
-    # for wolf in wolves:
-    #     if wolf[0] < -64:
-    #         wolves.pop(index)
-    #     wolf[0] -= 7
-    #     # 6.3.1 - Attack castle
-    #     badrect = pygame.Rect(badguyimg.get_rect())
-    #     badrect.top = wolf[1]
-    #     badrect.left = wolf[0]
-    #     if badrect.left < 64:
-    #         hit.play()
-    #         healthvalue -= random.randint(5, 20)
-    #         wolves.pop(index)
-    #     # 6.3.2 - Check for collisions
-    #     index1 = 0
-    #     for bullet in arrows:
-    #         bullrect = pygame.Rect(arrow.get_rect())
-    #         bullrect.left = bullet[1]
-    #         bullrect.top = bullet[2]
-    #         if badrect.colliderect(bullrect):
-    #             enemy.play()
-    #             acc[0] += 1
-    #             wolves.pop(index)
-    #             arrows.pop(index1)
-    #         index1 += 1
-    #     # 6.3.3 - Next bad guy
-    #     index += 1
-    # for wolf in wolves:
-    #     screen.blit(wolfimg, wolf)
+    # 6.2 - Draw arrows
+    for bullet in arrows:
+        index = 0
+        velx = math.cos(bullet[0]) * 10
+        vely = math.sin(bullet[0]) * 10
+        bullet[1] += velx
+        bullet[2] += vely
+        if bullet[1] < -64 or bullet[1] > 640 or bullet[2] < -64 or bullet[2] > 480:
+            arrows.pop(index)
+        index += 1
+        for projectile in arrows:
+            arrow1 = pygame.transform.rotate(arrow, 360 - projectile[0] * 57.29)
+            screen.blit(arrow1, (projectile[1], projectile[2]))
 
+    #6.3 draw badgers / badguys
     if badtimer == 0:
         # adding new bad guys
         badguys.append([900, random.randint(50, 430)])
-        wolves.append([640,random.randint(50,430)])
+
         badtimer = 100
-        # badtimer = 500 - int(badtimer1*0.1)
-        # if badtimer1 >= 35:
-        #     badtimer1 = 35
-        # else:
-        #     badtimer1 += 5
 
     # remove bad guys once it's out of screen
     index = 0
@@ -126,82 +98,78 @@ while running:
             badguys.pop(index)
 
         badguy[0] -= 5# moving the badguy to the left of scrreen
-        index += 1
 
+        # 6.3.1 - Attack castle
+        badrect = pygame.Rect(badguyimg.get_rect())
+        badrect.top = badguy[1]
+        badrect.left = badguy[0]
+        if badrect.left < 64:
+            hit.play()
+            healthvalue -= random.randint(5, 20)
+            badguys.pop(index)
+
+        # 6.3.2 - Check for collisions
+        index1 = 0
+        for bullet in arrows:
+            bullrect = pygame.Rect(arrow.get_rect())
+            bullrect.left = bullet[1]
+            bullrect.top = bullet[2]
+            if badrect.colliderect(bullrect):
+                enemy.play()
+                acc[0] += 1
+                badguys.pop(index)
+                arrows.pop(index1)
+            index1 += 1
+
+        index += 1 #this goes to 6.3.3
+
+    for badguy in badguys:
+        screen.blit(badguyimg, badguy)
+
+    # 6.4
     # remove wolf once it's out of scrreen
-    index = 0
+        # 6.4 draw wolves / badguys
+    if badtimer1 == 0:
+        # adding new bad guys
+
+        wolves.append([640, random.randint(50, 430)])
+        badtimer1 = 100
+
+    # remove bad guys once it's out of screen
+    indexw = 0
     for wolf in wolves:
         if wolf[0] < -64:
             wolves.pop(index)
 
-        wolf[0] -= 5
-        index += 1
-        # # 6.3.1 - Attack castle
-        # badrect = pygame.Rect(badguyimg.get_rect())
-        # badrect.top = badguy[1]
-        # badrect.left = badguy[0]
-        # if badrect.left < 64:
-        #     hit.play()
-        #     healthvalue -= random.randint(5, 20)
-        #     badguys.pop(index)
+        wolf[0] -= 5  # moving the badguy to the left of scrreen
 
-        # # 6.3.2 - Check for collisions
-        # index1 = 0
-        # for bullet in arrows:
-        #     bullrect = pygame.Rect(arrow.get_rect())
-        #     bullrect.left = bullet[1]
-        #     bullrect.top = bullet[2]
-        #     if badrect.colliderect(bullrect):
-        #         enemy.play()
-        #         acc[0] += 1
-        #         badguys.pop(index)
-        #         arrows.pop(index1)
-        #     index1 += 1
-        # 6.3.3 - Next bad guy
+        # 6.4.1 - Attack castle
+        badrect = pygame.Rect(wolfimg.get_rect())
+        badrect.top = wolf[1]
+        badrect.left = wolf[0]
+        if badrect.left < 64:
+            hit.play()
+            healthvalue -= random.randint(5, 20)
+            wolves.pop(indexw)
 
+        # 6.4.2 - Check for collisions
+        index1 = 0
+        for bullet in arrows:
+            bullrect = pygame.Rect(arrow.get_rect())
+            bullrect.left = bullet[1]
+            bullrect.top = bullet[2]
+            if badrect.colliderect(bullrect):
+                enemy.play()
+                acc[0] += 1
+                wolves.pop(indexw)
+                arrows.pop(index1)
+            index1 += 1
 
-    for badguy in badguys:
-        screen.blit(badguyimg, badguy)
+        # 6.4.3 next wolf
+        indexw += 1
+
     for wolf in wolves:
         screen.blit(wolfimg, wolf)
-    # 7 - update the screen #should be before the keyboard
-
-
-    # # 8 - loop through the events
-    # for event in pygame.event.get():
-    #     # check if the event is the X button
-    #     if event.type == KEYDOWN: #Keyboard is being pressed
-    #         if event.key == K_UP:
-    #             keys[0] = True
-    #         elif event.key == K_LEFT:
-    #             keys[1] = True
-    #         elif event.key == K_DOWN:
-    #             keys[2] = True
-    #         elif event.key == K_RIGHT:
-    #             keys[3] = True
-    #     if event.type == KEYUP: #keyboard has been released
-    #         if event.key == K_UP:
-    #             keys[0] = False
-    #         elif event.key == K_LEFT:
-    #             keys[1] = False
-    #         elif event.key == K_DOWN:
-    #             keys[2] = False
-    #         elif event.key == K_RIGHT:
-    #             keys[3] = False
-
-    # 6.2 - Draw arrows
-    for bullet in arrows:
-        index = 0
-        velx = math.cos(bullet[0])*10
-        vely = math.sin(bullet[0])*10
-        bullet[1] += velx
-        bullet[2] += vely
-        if bullet[1]<-64 or bullet[1]>640 or bullet[2]<-64 or bullet[2]>480:
-            arrows.pop(index)
-        index += 1
-        for projectile in arrows:
-            arrow1 = pygame.transform.rotate(arrow, 360-projectile[0]*57.29)
-            screen.blit(arrow1, (projectile[1], projectile[2]))
 
     # 9 - Move player
     if keys[0]:
@@ -217,6 +185,7 @@ while running:
         if playerpos[0] < 630:
          playerpos[0] += 5
     badtimer -= 1 #part that changes the timer
+    badtimer1 -= 1
 
     pygame.display.flip()  # update the screen
     for event in pygame.event.get():
