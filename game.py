@@ -91,8 +91,9 @@ while running:
     if badtimer == 0:
         # adding new bad guys
         badguys.append([900, random.randint(50, 430)])
+        acc[1]+=1
 
-        badtimer = 100
+        badtimer = 500
 
     #6.3.1 remove bad guys once it's out of screen
     index = 0
@@ -100,7 +101,7 @@ while running:
         if badguy[0] < -64:
             badguys.pop(index)
 
-        badguy[0] -= 5#6.3.2 moving the badguy to the left of scrreen
+        badguy[0] -= 1#6.3.2 moving the badguy to the left of scrreen
 
         # 6.3.3 - Attack castle
         badrect = pygame.Rect(badguyimg.get_rect())
@@ -125,18 +126,21 @@ while running:
             index1 += 1
 
         index += 1 #this goes to 6.3.3
+
+
     #6.3.5 shows the bad guy
     for badguy in badguys:
         screen.blit(badguyimg, badguy)
 
     # 6.4 repeat 6.3 for the wolves
     # remove wolf once it's out of scrreen
-        # 6.4 draw wolves / badguys
+        # 6.4.0 draw wolves / badguys
     if badtimer1 == 0:
         # adding new bad guys
 
         wolves.append([640, random.randint(50, 430)])
-        badtimer1 = 100
+        badtimer1 = 500
+        acc[1]+=1
 
     # remove bad guys once it's out of screen
     indexw = 0
@@ -144,7 +148,7 @@ while running:
         if wolf[0] < -64:
             wolves.pop(index)
 
-        wolf[0] -= 5  # moving the badguy to the left of scrreen
+        wolf[0] -= 1 # moving the badguy to the left of scrreen
 
         # 6.4.1 - Attack castle
         badrect = pygame.Rect(wolfimg.get_rect())
@@ -173,6 +177,10 @@ while running:
 
     for wolf in wolves:
         screen.blit(wolfimg, wolf)
+    #6.5 Health bar
+    screen.blit(healthbar, (5, 5))
+    for health1 in range(healthvalue):
+        screen.blit(health, (health1 + 8, 8))
 
     # 9 - Move player
     if keys[0]:
@@ -221,3 +229,40 @@ while running:
             acc[1] += 1
             arrows.append([math.atan2(position[1]-(playerpos1[1]+32),position[0]-(playerpos1[0]+26)),playerpos1[0]+32,playerpos1[1]+32])
 
+    # 10 - Win/Lose check
+    if pygame.time.get_ticks() >= 90000:
+        running = 0
+        exitcode = 1
+    if healthvalue <= 0:
+        running = 0
+        exitcode = 0
+    if acc[1] != 0:
+        accuracy = acc[0]*1.0/acc[1]*100
+    else:
+        accuracy = 0
+# 11 - Win/lose display
+if exitcode == 0:
+    pygame.font.init()
+    font = pygame.font.Font(None, 24)
+    text = font.render("Accuracy: "+ "{accuracy:.2f}".format(accuracy=accuracy) +"%", True, (255, 0, 0))
+    textRect = text.get_rect()
+    textRect.centerx = screen.get_rect().centerx
+    textRect.centery = screen.get_rect().centery+24
+    screen.blit(gameover, (0, 0))
+    screen.blit(text, textRect)
+else:
+    pygame.font.init()
+    font = pygame.font.Font(None, 24)
+    text = font.render("Accuracy: "+ "{accuracy:.2f}".format(accuracy=accuracy)+"%", True, (0, 255, 0))
+    textRect = text.get_rect()
+    textRect.centerx = screen.get_rect().centerx
+    textRect.centery = screen.get_rect().centery+24
+    screen.blit(youwin, (0, 0))
+    screen.blit(text, textRect)
+
+while 1:
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            exit(0)
+    pygame.display.flip()
