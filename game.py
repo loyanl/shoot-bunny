@@ -3,6 +3,116 @@ import math
 import random
 import pygame
 from pygame.locals import *
+import os
+
+# Game Initialization
+pygame.init()
+
+# Center the Game Application
+os.environ['SDL_VIDEO_CENTERED'] = '1'
+
+# Game Resolution
+screen_width = 800
+screen_height = 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+
+
+# Text Renderer
+def text_format(message, textFont, textColor):
+    newText = textFont.render(message, True, textColor)
+    return newText
+
+
+# Colors
+white = (255, 255, 255)
+black = (0, 0, 0)
+gray = (50, 50, 50)
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
+yellow = (255, 255, 0)
+purple = (255, 0, 255)
+
+# Game Fonts
+
+# Game Framerate
+clock = pygame.time.Clock()
+FPS = 30
+
+
+# Main Menu
+def main_menu():
+    menu = True
+    selected = "start"
+    num=0
+    while menu:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    selected = "easy"
+                    num-=1
+
+
+                elif event.key == pygame.K_DOWN:
+                    selected = "hard"
+                    num+=1
+
+                if event.key == pygame.K_RETURN:
+                    calc=num%3
+                    if calc == 0:
+                        selected = "easy"
+                    elif calc == 1:
+                        selected = "difficult"
+                    else:
+                        selected = "quit"
+                    if selected == "easy":
+                        print("Starting easy version")
+                    if selected == "difficult":
+                        print("Starting difficult version")
+                    if selected == "quit":
+                        pygame.quit()
+                        quit()
+
+        # Main Menu UI
+        screen.fill(blue)
+        font = pygame.font.SysFont(None, 24)
+        title = text_format("Shooting Bunny Game", font, yellow)
+        question = text_format("Please make a selection", font, purple)
+        if num%3==0:
+            easy_start = text_format("EASY", font, white)
+        else:
+            easy_start = text_format("EASY", font, black)
+        if num%3==1:
+            difficult_start = text_format("DIFFICULT", font, white)
+        else:
+            difficult_start = text_format("DIFFICULT", font, black)
+        if num%3==2:
+            text_quit = text_format("QUIT", font, white)
+        else:
+            text_quit = text_format("QUIT", font, black)
+
+        title_rect = title.get_rect()
+        question_rect = question.get_rect()
+        easy_rect = easy_start.get_rect()
+        difficult_rect = difficult_start.get_rect()
+        quit_rect = text_quit.get_rect()
+
+        # Main Menu Text
+        screen.blit(title, (screen_width / 2 - (title_rect[2] / 2), 80))
+        screen.blit(question, (screen_width / 2 - (question_rect[2] / 2), 120))
+        screen.blit(easy_start, (screen_width / 2 - (easy_rect[2] / 2), 300))
+        screen.blit(difficult_start, (screen_width / 2 - (difficult_rect[2] / 2), 330))
+        screen.blit(text_quit, (screen_width / 2 - (quit_rect[2] / 2), 360))
+        pygame.display.update()
+        clock.tick(FPS)
+        pygame.display.set_caption("Python - Pygame Simple Main Menu Selection")
+
+
+
+main_menu()
 
 # 2 - Initialize the game
 pygame.init()
@@ -181,7 +291,13 @@ while running:
     screen.blit(healthbar, (5, 5))
     for health1 in range(healthvalue):
         screen.blit(health, (health1 + 8, 8))
-
+     # 6.6 - Draw clock
+    font = pygame.font.Font(None, 24)
+    survivedtext = font.render(str((90000 - pygame.time.get_ticks()) // 60000) + ":" + str(
+        (90000 - pygame.time.get_ticks()) // 1000 % 60).zfill(2), True, (0, 0, 0))
+    textRect = survivedtext.get_rect()
+    textRect.topright = [635, 5]
+    screen.blit(survivedtext, textRect)
     # 9 - Move player
     if keys[0]:
         if playerpos[1]>10:
@@ -228,6 +344,7 @@ while running:
             position = pygame.mouse.get_pos()
             acc[1] += 1
             arrows.append([math.atan2(position[1]-(playerpos1[1]+32),position[0]-(playerpos1[0]+26)),playerpos1[0]+32,playerpos1[1]+32])
+
 
     # 10 - Win/Lose check
     if pygame.time.get_ticks() >= 90000:
