@@ -390,17 +390,21 @@ def game(health_value, speed_of_enemies,badtimer_initial):
         screen.blit(youwin, (0, 0))
         screen.blit(text, textRect)
 
+    main_menu()
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 exit(0)
         pygame.display.flip()
+
+
     return none
 
+while:
+    main_menu()
+    if difficulty_level == 1:
+        game(100, 2, 100)
+    elif difficulty_level == 2:
+        game(50, 10, 30)
 
-main_menu()
-if difficulty_level==1:
-    game(100,2,100)
-elif difficulty_level==2:
-    game(50,10,30)
