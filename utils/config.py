@@ -11,8 +11,8 @@ yellow = (255, 255, 0)
 purple = (255, 0, 255)
 
 # Game Resolution
-screen_width = 800
-screen_height = 600
+screen_width = 600
+screen_height = 480
 
 # game clock and fps
 clock = pygame.time.Clock()

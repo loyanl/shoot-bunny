@@ -1,8 +1,9 @@
 import pygame
 import sys
 
-from utils.config import (blue, yellow, purple, white, black, screen_width, clock, FPS)
-from utils.utils import text_format
+from utils.config import (blue, yellow, purple, white, black, screen_width, screen_height,
+                          clock, FPS)
+from utils.utils import text_format, get_window_center
 
 
 def main_menu(screen):
@@ -56,11 +57,11 @@ def main_menu(screen):
         quit_rect = text_quit.get_rect()
 
         # Main Menu Text
-        screen.blit(title, (screen_width / 2 - (question_rect[2]), 60))
-        screen.blit(question, (screen_width / 2 - (question_rect[2]), 120))
-        screen.blit(easy_start, (screen_width / 2 - (question_rect[2]-55), 300))
-        screen.blit(difficult_start, (screen_width / 2 - (difficult_rect[2]+65), 330))
-        screen.blit(text_quit, (screen_width / 2 - (quit_rect[2]+90), 360))
+        screen.blit(title, (screen_width/2 - title_rect[2]/2, 60))
+        screen.blit(question, (screen_width/2 - question_rect[2]/2, 120))
+        screen.blit(easy_start, (screen_width/2 - easy_rect[2]/2, 300))
+        screen.blit(difficult_start, (screen_width/2 - difficult_rect[2]/2, 330))
+        screen.blit(text_quit, (screen_width/2 - quit_rect[2]/2, 360))
         pygame.display.update()
         clock.tick(FPS)
         pygame.display.set_caption("Python - Pygame Simple Main Menu Selection")

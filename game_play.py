@@ -6,19 +6,14 @@ from utils.config import screen_width, screen_height
 from utils.main_menu import main_menu
 from utils.main_game import game
 
+# Center the Game Application
+os.environ['SDL_VIDEO_CENTERED'] = '1'
+
 # Game Initialization
 pygame.init()
 screen = pygame.display.set_mode((screen_width, screen_height))
 
-# Center the Game Application
-os.environ['SDL_VIDEO_CENTERED'] = '1'
-
 difficulty_level=0
-
-# 2 - Initialize the game
-pygame.init()
-width, height = 640, 480
-screen = pygame.display.set_mode((width, height))
 
 while True:
     difficulty_level = main_menu(screen)
