@@ -13,6 +13,7 @@ original source code: [https://github.com/Archiita/Bunnies-and-Badgers](https://
 background: https://pixabay.com/illustrations/game-background-sky-game-landscape-4956017/
 
 ##images when playing the game
+
 ![gameover](https://github.com/loyanl/shoot-bunny/blob/main/snapshots/game1.png?raw=true)
 ![menu](https://github.com/loyanl/shoot-bunny/blob/main/snapshots/game2.png?raw=true)
 ![gameinterface](https://github.com/loyanl/shoot-bunny/blob/main/snapshots/game3.png?raw=true)
